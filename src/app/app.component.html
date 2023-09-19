@@ -1,65 +1,90 @@
+<mat-toolbar color="primary">
+  <span>Imagen a texto</span>
+</mat-toolbar>
 <div class="container">
+
   <div class="row my-5">
     <div class="col-12">
-      <h3>Imagen a texto</h3>
-    </div>
-
-    <div class="col-10">
+      <label for="txtFile" class="form-label">Factura.</label>
       <div class="input-group mb-3">
-        <input type="file" class="form-control" id="inputGroupFile01" accept="image/png, image/jpeg"
+        <input type="file" class="form-control" id="txtFile" accept="image/png, image/jpeg"
           (change)="fileChangeEvent($event)">
       </div>
     </div>
-
-    <div class="col-2">
-      <button class="btn btn-primary" (click)="cargar()">Cargar...</button>
-    </div>
-
   </div>
-  <div class="row my-5 g-3">
 
 
-    <mat-stepper [linear]="true" #stepper>
-      <mat-step >
-        <!-- <form [formGroup]="firstFormGroup">
-          <ng-template matStepLabel>Fill out your name</ng-template>
-          <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-          </mat-form-field>
-          <div>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form> -->
-      </mat-step>
-      <mat-step label="Fill out your address">
-        <!-- <form [formGroup]="secondFormGroup">
-          <mat-form-field>
-            <mat-label>Address</mat-label>
-            <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                   required>
-          </mat-form-field>
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form> -->
-      </mat-step>
-      <mat-step>
-        <ng-template matStepLabel>Done</ng-template>
-        <p>You are now done.</p>
-        <div>
-          <button mat-button matStepperPrevious>Back</button>
-          <button mat-button (click)="stepper.reset()">Reset</button>
-        </div>
-      </mat-step>
-    </mat-stepper>
+  <div class="card">
+    <div class="card-body">
+      <div class="row mt-5 g-3">
+        <mat-stepper [linear]="false" #stepper>
+          <mat-step label="Marque el NIT" [stepControl]="formNit">
+            <form [formGroup]="formNit">
+              <div class="col-12">
+                <image-cropper [aspectRatio]="4" [imageChangedEvent]="imageChangedEvent" format="png"
+                  (imageCropped)="imageCropped($event)" output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
+                  (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+                  (loadImageFailed)="loadImageFailed()"></image-cropper>
+              </div>
+              <div class="col-12 mx-auto">
+                <button class="btn btn-sm btn-primary">Seleccionar</button>
+              </div>
+              <div class="my-3">
+                <button mat-raised-button color="primary" matStepperNext>Siguiente</button>
+              </div>
+            </form>
+          </mat-step>
+          <mat-step label="Marque el No. Factura">
+            <!-- <form [formGroup]="secondFormGroup">
+              <mat-form-field>
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+                       required>
+              </mat-form-field>
+              <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+              </div>
+            </form> -->
+            <div class="my-3">
+              <button class="mx-1" mat-raised-button matStepperPrevious>Regresar</button>
+              <button class="mx-1" mat-raised-button color="primary" matStepperNext>Siguiente</button>
+            </div>
+          </mat-step>
+          <mat-step label="Marque el Total">
+            <!-- <form [formGroup]="secondFormGroup">
+              <mat-form-field>
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+                       required>
+              </mat-form-field>
+              <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+              </div>
+            </form> -->
+            <div class="my-3">
+              <button class="mx-1" mat-raised-button matStepperPrevious>Regresar</button>
+              <button class="mx-1" mat-raised-button color="primary" matStepperNext>Siguiente</button>
+            </div>
+          </mat-step>
+          <mat-step>
+            <ng-template matStepLabel>Analizar</ng-template>
 
-    <!-- <div class="col-12">
-      <image-cropper [aspectRatio]="4" [imageChangedEvent]="imageChangedEvent" format="png"
-        (imageCropped)="imageCropped($event)" output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
-        (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
-        (loadImageFailed)="loadImageFailed()"></image-cropper>
-    </div> -->
+            <div>
+              <button class="mx-1" mat-raised-button matStepperPrevious>Regresar</button>
+              <button class="mx-1" mat-raised-button color="primary">Analizar</button>
+            </div>
+          </mat-step>
+        </mat-stepper>
+
+        <!-- <div class="col-12">
+          <image-cropper [aspectRatio]="4" [imageChangedEvent]="imageChangedEvent" format="png"
+            (imageCropped)="imageCropped($event)" output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
+            (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+            (loadImageFailed)="loadImageFailed()"></image-cropper>
+        </div> -->
+      </div>
+    </div>
   </div>
 </div>

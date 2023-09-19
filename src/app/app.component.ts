@@ -8,6 +8,7 @@ import {
 import * as Tesseract from 'tesseract.js';
 import { createWorker } from 'tesseract.js';
 import { AppService } from './app.service';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,20 @@ export class AppComponent {
   imgBase64: string = '';
   showLoader: boolean = false;
   textDecod: any;
-  constructor(private sanitizer: DomSanitizer, private _service: AppService) {
+
+  formNit = this._fb.group({
+    nit: new FormControl('',[Validators.required])
+  });
+
+  formNoFactura = this._fb.group({
+    noFac: new FormControl('',[Validators.required])
+  });
+
+  formTotal = this._fb.group({
+    total: new FormControl('',[Validators.required])
+  });
+
+  constructor(private sanitizer: DomSanitizer, private _service: AppService, private _fb: FormBuilder) {
     this.doOCR();
   }
 
@@ -77,7 +91,6 @@ export class AppComponent {
 
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
-    // this.selectIMG(event);
   }
 
   imageCropped(event: ImageCroppedEvent) {
@@ -85,36 +98,20 @@ export class AppComponent {
     console.log(event);
     console.log(this.croppedImage);
   }
+
   imageLoaded(image: LoadedImage) {
     // show cropper
   }
+
   cropperReady() {
     // cropper ready
   }
+
   loadImageFailed() {
     // show message
   }
 
   cargar() {
-    // this.showLoader = true;
-
-    // this.imageCropper.crop('blob')?.then((res) => {
-    //   const imageName = 'name.png';
-    //   // const imageBlob = this.dataURItoBlob();
-    //   const imageFile = new File([res.blob!], imageName, { type: 'image/png' });
-    //   this._service.post(imageFile).subscribe({
-    //     next: (res) => {
-    //       console.log(res);
-    //       this.textDecod = res;
-    //       this.showLoader = false;
-    //     },
-    //     error: (err) => {
-    //       console.error(err);
-    //       this.showLoader = false;
-    //     },
-    //   });
-    // });
-
     this.recognizeIMG();
   }
 

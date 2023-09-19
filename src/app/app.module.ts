@@ -10,6 +10,10 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatStepperModule} from '@angular/material/stepper';
+import { ReactiveFormsModule } from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatCardModule} from '@angular/material/card';
 
 
 @NgModule({
@@ -23,7 +27,11 @@ import {MatStepperModule} from '@angular/material/stepper';
     AppRoutingModule,
     ImageCropperModule,
     MatStepperModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
