@@ -97,7 +97,6 @@ export class AppComponent {
     this.ocrTotal = resultTotal.data.text;
 
     this.showLoader = false;
-
   }
 
   selectIMG(event: any) {
@@ -123,6 +122,15 @@ export class AppComponent {
 
     if (file) {
       this.showSteper = true;
+      this.formNit.patchValue({
+        nit: '',
+      });
+      this.formNoFactura.patchValue({
+        noFac: '',
+      });
+      this.formTotal.patchValue({
+        total: '',
+      });
     }
   }
 
