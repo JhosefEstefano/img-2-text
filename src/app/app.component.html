@@ -3,7 +3,7 @@
 </mat-toolbar>
 <div class="container">
 
-  <div class="row my-5">
+  <div class="row my-5 animate__animated animate__headShake">
     <div class="col-12">
       <label for="txtFile" class="form-label">Factura.</label>
       <div class="input-group mb-3">
@@ -13,67 +13,128 @@
     </div>
   </div>
 
+ 
 
-  <div class="card">
-    <div class="card-body">
-      <div class="row mt-5 g-3">
-        <mat-stepper [linear]="false" #stepper>
+  <mat-card *ngIf="showSteper">
+    <mat-card-content>
+      <div class="row ">
+        <mat-stepper [linear]="true" #stepper>
           <mat-step label="Marque el NIT" [stepControl]="formNit">
             <form [formGroup]="formNit">
               <div class="col-12">
-                <image-cropper [aspectRatio]="4" [imageChangedEvent]="imageChangedEvent" format="png"
-                  (imageCropped)="imageCropped($event)" output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
-                  (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
-                  (loadImageFailed)="loadImageFailed()"></image-cropper>
+                <div class="row">
+                  <div class="col-11">
+                    <image-cropper #imageCropperNit [aspectRatio]="1" [cropperMinHeight]="5"
+                      [imageChangedEvent]="imageChangedEvent" format="png" (imageCropped)="imageCropped($event)"
+                      output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
+                      (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+                      (loadImageFailed)="loadImageFailed()"></image-cropper>
+                  </div>
+                  <div class="col-1 d-flex justify-content-start align-items-center">
+                    <button class="btn btn-sm btn-primary" (click)="cortarNit()">Seleccionar</button>
+                  </div>
+                </div>
               </div>
-              <div class="col-12 mx-auto">
-                <button class="btn btn-sm btn-primary">Seleccionar</button>
-              </div>
+
               <div class="my-3">
-                <button mat-raised-button color="primary" matStepperNext>Siguiente</button>
+                <button mat-raised-button color="primary" matStepperNext [disabled]="formNit.invalid">Siguiente</button>
               </div>
             </form>
           </mat-step>
-          <mat-step label="Marque el No. Factura">
-            <!-- <form [formGroup]="secondFormGroup">
-              <mat-form-field>
-                <mat-label>Address</mat-label>
-                <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                       required>
-              </mat-form-field>
-              <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
+          <mat-step label="Marque el No. Factura" [stepControl]="formNoFactura">
+            <form [formGroup]="formNoFactura">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-11">
+                    <image-cropper #imageCropperNoFac [aspectRatio]="1" [cropperMinHeight]="5"
+                      [imageChangedEvent]="imageChangedEvent" format="png" (imageCropped)="imageCropped($event)"
+                      output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
+                      (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+                      (loadImageFailed)="loadImageFailed()"></image-cropper>
+                  </div>
+                  <div class="col-1 d-flex justify-content-start align-items-center">
+                    <button class="btn btn-sm btn-primary" (click)="cortarNoFac()">Seleccionar</button>
+                  </div>
+                </div>
               </div>
-            </form> -->
+            </form>
             <div class="my-3">
               <button class="mx-1" mat-raised-button matStepperPrevious>Regresar</button>
-              <button class="mx-1" mat-raised-button color="primary" matStepperNext>Siguiente</button>
+              <button class="mx-1" mat-raised-button color="primary" [disabled]="formNoFactura.invalid"
+                matStepperNext>Siguiente</button>
             </div>
           </mat-step>
-          <mat-step label="Marque el Total">
-            <!-- <form [formGroup]="secondFormGroup">
-              <mat-form-field>
-                <mat-label>Address</mat-label>
-                <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                       required>
-              </mat-form-field>
-              <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
+          <mat-step label="Marque el Total" [stepControl]="formTotal">
+            <form [formGroup]="formTotal">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-11">
+                    <image-cropper #imageCropperTotal [aspectRatio]="1" [cropperMinHeight]="5"
+                      [imageChangedEvent]="imageChangedEvent" format="png" (imageCropped)="imageCropped($event)"
+                      output="base64" [maintainAspectRatio]="false" [autoCrop]="false"
+                      (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
+                      (loadImageFailed)="loadImageFailed()"></image-cropper>
+                  </div>
+                  <div class="col-1 d-flex justify-content-start align-items-center">
+                    <button class="btn btn-sm btn-primary" (click)="cortarTotal()">Seleccionar</button>
+                  </div>
+                </div>
               </div>
-            </form> -->
+            </form>
             <div class="my-3">
               <button class="mx-1" mat-raised-button matStepperPrevious>Regresar</button>
-              <button class="mx-1" mat-raised-button color="primary" matStepperNext>Siguiente</button>
+              <button class="mx-1" mat-raised-button color="primary" [disabled]="formTotal.invalid"
+                matStepperNext>Siguiente</button>
             </div>
           </mat-step>
           <mat-step>
             <ng-template matStepLabel>Analizar</ng-template>
 
-            <div>
+            <div class="col-12 my-2">
+
+              <mat-card class="mx-2 my-2">
+                <mat-card-content>
+                  <h4>Nit.</h4>
+                  <img [src]="formNit.value.nit" alt="nit">
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="mx-2 my-2">
+                <mat-card-content>
+                  <h4>No. Fac.</h4>
+                  <img [src]="formNoFactura.value.noFac" alt="No.Fac">
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="mx-2 my-2">
+                <mat-card-content>
+                  <h4>Total.</h4>
+                  <img [src]="formTotal.value.total" alt="total">
+                </mat-card-content>
+              </mat-card>
+
+            </div>
+
+            <div class="col-12">
+              <mat-card class="mx-2 my-2">
+                <mat-card-content>
+
+                  <div class="d-flex justify-content-center  align-items-center">
+                    <mat-spinner *ngIf="showLoader"></mat-spinner>
+                  </div>
+
+                  <p> <b>NIT:</b>  {{ocrNit}}  </p>
+                  <p> <b>NO.Fac.:</b> {{ocrNoFac}}</p>
+                  <p> <b>Total.:</b> {{ocrTotal}} </p>
+
+
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <div class="my-2">
               <button class="mx-1" mat-raised-button matStepperPrevious>Regresar</button>
-              <button class="mx-1" mat-raised-button color="primary">Analizar</button>
+              <button class="mx-1" mat-raised-button color="primary" (click)="cargar()">Analizar</button>
             </div>
           </mat-step>
         </mat-stepper>
@@ -85,6 +146,6 @@
             (loadImageFailed)="loadImageFailed()"></image-cropper>
         </div> -->
       </div>
-    </div>
-  </div>
+    </mat-card-content>
+  </mat-card>
 </div>

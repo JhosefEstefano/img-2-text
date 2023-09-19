@@ -16,7 +16,9 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  @ViewChild(ImageCropperComponent) imageCropper!: ImageCropperComponent;
+  @ViewChild('imageCropperNit') imageCropperNit!: ImageCropperComponent;
+  @ViewChild('imageCropperNoFac') imageCropperNoFac!: ImageCropperComponent;
+  @ViewChild('imageCropperTotal') imageCropperTotal!: ImageCropperComponent;
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -25,24 +27,37 @@ export class AppComponent {
   ocrResult = 'Recognizing...';
   workerReady = false;
   captureProgress = 0;
-  img!: File;
+  imgOriginal!: File;
+  imgNit!: File;
+  imgNoFac!: File;
+  imgTotal!: File;
+
+  ocrNit: string = '';
+  ocrNoFac: string = '';
+  ocrTotal: string = '';
+
   imgBase64: string = '';
   showLoader: boolean = false;
+  showSteper: boolean = false;
   textDecod: any;
 
   formNit = this._fb.group({
-    nit: new FormControl('',[Validators.required])
+    nit: new FormControl('', [Validators.required, Validators.minLength(10)]),
   });
 
   formNoFactura = this._fb.group({
-    noFac: new FormControl('',[Validators.required])
+    noFac: new FormControl('', [Validators.required, Validators.minLength(10)]),
   });
 
   formTotal = this._fb.group({
-    total: new FormControl('',[Validators.required])
+    total: new FormControl('', [Validators.required, Validators.minLength(10)]),
   });
 
-  constructor(private sanitizer: DomSanitizer, private _service: AppService, private _fb: FormBuilder) {
+  constructor(
+    private sanitizer: DomSanitizer,
+    private _service: AppService,
+    private _fb: FormBuilder
+  ) {
     this.doOCR();
   }
 
@@ -62,14 +77,27 @@ export class AppComponent {
   }
 
   async recognizeIMG() {
-    this.imageCropper.crop('blob')?.then(async (res) => {
-      console.log(res);
-      const imageName = 'name.png';
-      const imageFile = new File([res.blob!], imageName, { type: 'image/png' });
-      const result = await this.worker.recognize(imageFile);
-      console.log(result);
-      this.ocrResult = result.data.text;
-    });
+    // this.imageCropper.crop('blob')?.then(async (res) => {
+    //   console.log(res);
+    //   const imageName = 'name.png';
+    //   const imageFile = new File([res.blob!], imageName, { type: 'image/png' });
+    //   const result = await this.worker.recognize(imageFile);
+    //   console.log(result);
+    //   this.ocrResult = result.data.text;
+    // });
+
+    this.showLoader = true;
+
+    const resultNit = await this.worker.recognize(this.imgNit);
+    const resultNoFac = await this.worker.recognize(this.imgNoFac);
+    const resultTotal = await this.worker.recognize(this.imgTotal);
+
+    this.ocrNit = resultNit.data.text;
+    this.ocrNoFac = resultNoFac.data.text;
+    this.ocrTotal = resultTotal.data.text;
+
+    this.showLoader = false;
+
   }
 
   selectIMG(event: any) {
@@ -84,13 +112,18 @@ export class AppComponent {
 
       reader.readAsDataURL(file);
 
-      this.img = file;
+      this.imgOriginal = file;
       this.recognizeIMG();
     }
   }
 
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.showSteper = true;
+    }
   }
 
   imageCropped(event: ImageCroppedEvent) {
@@ -124,5 +157,44 @@ export class AppComponent {
     }
     const blob = new Blob([int8Array], { type: 'image/png' });
     return blob;
+  }
+
+  cortarNit() {
+    this.imageCropperNit.crop('blob')?.then(async (res) => {
+      console.log(res);
+      const imageName = 'name.png';
+      const imageFile = new File([res.blob!], imageName, { type: 'image/png' });
+      this.imgNit = imageFile;
+      this.formNit.patchValue({
+        nit: this.imageCropperNit.crop('base64')?.base64,
+      });
+      this._service.snackBar('¡Nit marcado!');
+    });
+  }
+
+  cortarNoFac() {
+    this.imageCropperNoFac.crop('blob')?.then(async (res) => {
+      console.log(res);
+      const imageName = 'name.png';
+      const imageFile = new File([res.blob!], imageName, { type: 'image/png' });
+      this.imgNoFac = imageFile;
+      this.formNoFactura.patchValue({
+        noFac: this.imageCropperNoFac.crop('base64')?.base64,
+      });
+      this._service.snackBar('!No. Fac. marcado!');
+    });
+  }
+
+  cortarTotal() {
+    this.imageCropperTotal.crop('blob')?.then(async (res) => {
+      console.log(res);
+      const imageName = 'name.png';
+      const imageFile = new File([res.blob!], imageName, { type: 'image/png' });
+      this.imgTotal = imageFile;
+      this.formTotal.patchValue({
+        total: this.imageCropperTotal.crop('base64')?.base64,
+      });
+      this._service.snackBar('Total marcado!');
+    });
   }
 }
